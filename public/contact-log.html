@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QRZ Contact Logger</title>
+    <link rel="stylesheet" href="qrz-popout.css">
+  </head>
+  <body>
+    <main class="popout-shell wide-shell">
+      <header class="popout-topbar">
+        <div>
+          <div class="brand">QRZ Contact Logger</div>
+          <div class="subbrand">ADIF upload to QRZ Logbook</div>
+        </div>
+        <div class="station-call popout-call" aria-label="Station callsign">
+          <span>Station</span>
+          <strong data-station-call>LOCAL</strong>
+          <div class="station-grid-square" aria-label="Station grid square" hidden>
+            <span>Grid</span>
+            <strong data-station-grid></strong>
+          </div>
+        </div>
+        <div id="statusText" class="status">Loading</div>
+      </header>
+
+      <section class="popout-panel">
+        <div class="frequency-preview">
+          <div>
+            <span id="frequencyPreviewLabel">Following VFO-A</span>
+            <strong id="frequencyPreview">--.---.---</strong>
+          </div>
+          <button id="refreshFromRadioButton" type="button">Use Radio</button>
+        </div>
+
+        <section class="logger-cat-controls" aria-label="Logger radio controls">
+          <div class="logger-ptt-card">
+            <span>PTT</span>
+            <strong id="pttStatusDisplay">Ready</strong>
+            <button id="pttButton" type="button" class="danger">Hold PTT</button>
+          </div>
+          <label class="logger-slider">
+            <span>RF Gain</span>
+            <output id="rfGainDisplay">--</output>
+            <input id="rfGainSlider" type="range" min="0" max="255" step="1" value="115" disabled>
+          </label>
+          <label class="logger-slider logger-clarifier">
+            <span>Clarifier +/-500 Hz</span>
+            <output id="clarifierDisplay">0 Hz</output>
+            <input id="clarifierSlider" type="range" min="-500" max="500" step="1" value="0" disabled>
+          </label>
+          <button id="clarifierCenterButton" type="button" disabled>Center</button>
+        </section>
+
+        <form id="contactForm" class="field-grid">
+          <label>
+            <span id="callFieldLabel">Contact callsign</span>
+            <input id="callInput" name="call" autocomplete="off" required>
+          </label>
+          <label id="cbHandleField" hidden>
+            <span>CB handle</span>
+            <input id="cbHandleInput" name="cbHandle" autocomplete="off" placeholder="Handle on the air">
+          </label>
+          <label>
+            <span id="stationFieldLabel">My callsign</span>
+            <input id="stationCallsignInput" name="stationCallsign" autocomplete="off" required>
+          </label>
+          <div class="segmented-field">
+            <span>UTC date</span>
+            <div class="segmented-row segmented-date" aria-label="UTC date">
+              <input id="qsoMonthInput" inputmode="numeric" maxlength="2" placeholder="MM" aria-label="UTC month" required>
+              <input id="qsoDayInput" inputmode="numeric" maxlength="2" placeholder="DD" aria-label="UTC day" required>
+              <input id="qsoYearInput" inputmode="numeric" maxlength="4" placeholder="YYYY" aria-label="UTC year" required>
+            </div>
+            <input id="qsoDateInput" name="qsoDate" type="hidden">
+          </div>
+          <div class="segmented-field">
+            <span>UTC time</span>
+            <div class="segmented-row segmented-time" aria-label="UTC time">
+              <input id="timeHourInput" inputmode="numeric" maxlength="2" placeholder="HH" aria-label="UTC hour" required>
+              <input id="timeMinuteInput" inputmode="numeric" maxlength="2" placeholder="MM" aria-label="UTC minute" required>
+            </div>
+            <input id="timeOnInput" name="timeOn" type="hidden">
+          </div>
+          <label>
+            <span>Frequency MHz</span>
+            <input id="freqInput" name="freq" inputmode="decimal">
+          </label>
+          <label>
+            <span>Band</span>
+            <input id="bandInput" name="band" placeholder="10m">
+          </label>
+          <label>
+            <span>Mode</span>
+            <select id="modeInput" name="mode">
+              <option value="USB">USB</option>
+              <option value="LSB">LSB</option>
+              <option value="AM">AM</option>
+              <option value="SSB">SSB</option>
+            </select>
+          </label>
+          <label>
+            <span>Grid</span>
+            <input id="gridInput" name="grid" autocomplete="off">
+          </label>
+          <label>
+            <span>POTA location</span>
+            <input id="potaLocationInput" name="potaLocation" autocomplete="off" placeholder="US-1234 or park name">
+          </label>
+          <label>
+            <span>RST sent</span>
+            <input id="rstSentInput" name="rstSent" value="59">
+          </label>
+          <label>
+            <span>RST received</span>
+            <input id="rstRcvdInput" name="rstRcvd" value="59">
+          </label>
+          <label>
+            <span id="nameFieldLabel">Name</span>
+            <input id="nameInput" name="name" autocomplete="off">
+          </label>
+          <label>
+            <span id="qthFieldLabel">QTH</span>
+            <input id="qthInput" name="qth" autocomplete="off">
+          </label>
+          <label class="wide">
+            <span>Comment</span>
+            <textarea id="commentInput" name="comment"></textarea>
+          </label>
+        </form>
+
+        <section id="previousQsoPanel" class="previous-qso-panel" hidden>
+          <div class="previous-qso-head">
+            <div>
+              <span>Previous QSOs</span>
+              <strong id="previousQsoSummary">No matches loaded.</strong>
+            </div>
+            <div id="duplicateBadge" class="duplicate-badge" hidden>Worked Today</div>
+          </div>
+          <div id="previousQsoList" class="previous-qso-list"></div>
+        </section>
+
+        <div id="noticeText" class="notice">The QRZ key stays on the local server. This popout never sees it.</div>
+
+        <div class="button-row">
+          <button id="qrzLoginButton" type="button">QRZ Login</button>
+          <button id="openQrzButton" type="button">Open QRZ Page</button>
+          <button id="queueQsoCardButton" type="button">Queue QSO Card</button>
+          <button id="replaceToggleButton" type="button">Replace Off</button>
+          <button id="submitButton" type="submit" form="contactForm" class="primary">Log Contact</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="qrzLoginDialog" class="credential-dialog">
+      <form id="qrzLoginForm" class="credential-panel">
+        <div>
+          <div class="brand">QRZ XML Login</div>
+          <div class="subbrand">Held in local server memory until the app stops</div>
+        </div>
+        <div class="station-call dialog-call" aria-label="Station callsign">
+          <span>Station</span>
+          <strong data-station-call>LOCAL</strong>
+          <div class="station-grid-square" aria-label="Station grid square" hidden>
+            <span>Grid</span>
+            <strong data-station-grid></strong>
+          </div>
+        </div>
+        <label>
+          <span>QRZ username</span>
+          <input id="qrzXmlUsernameInput" autocomplete="username" required>
+        </label>
+        <label>
+          <span>QRZ password</span>
+          <input id="qrzXmlPasswordInput" type="password" autocomplete="current-password" required>
+        </label>
+        <label>
+          <span>Logbook API key optional</span>
+          <input id="qrzLogbookKeyInput" autocomplete="off" placeholder="Leave blank if already configured">
+        </label>
+        <div id="qrzLoginNotice" class="notice">XML login is used for callsign lookup. The API key is used for log upload/fetch if you enter it.</div>
+        <div class="button-row">
+          <button id="qrzLoginCancelButton" type="button">Cancel</button>
+          <button id="qrzLoginSubmitButton" type="submit" class="primary">Use For Session</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="contact-log.js" type="module"></script>
+  </body>
+</html>

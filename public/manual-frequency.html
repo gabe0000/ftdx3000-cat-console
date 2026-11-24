@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manual Frequency</title>
+    <link rel="stylesheet" href="qrz-popout.css">
+  </head>
+  <body>
+    <main class="popout-shell">
+      <header class="popout-topbar">
+        <div>
+          <div class="brand">Manual Frequency</div>
+          <div class="subbrand">Direct VFO-A entry</div>
+        </div>
+        <div class="station-call popout-call" aria-label="Station callsign">
+          <span>Station</span>
+          <strong data-station-call>LOCAL</strong>
+          <div class="station-grid-square" aria-label="Station grid square" hidden>
+            <span>Grid</span>
+            <strong data-station-grid></strong>
+          </div>
+        </div>
+        <div id="statusText" class="status">Loading</div>
+      </header>
+
+      <section class="popout-panel">
+        <div class="frequency-preview">
+          <div>
+            <span>Current VFO-A</span>
+            <strong id="frequencyPreview">--.---.---</strong>
+          </div>
+          <button id="useCurrentButton" type="button">Use Current</button>
+        </div>
+
+        <form id="manualFrequencyForm" class="field-grid">
+          <label class="wide">
+            <span>Frequency MHz</span>
+            <input id="frequencyInput" inputmode="decimal" placeholder="28.400000" required>
+          </label>
+          <label class="wide">
+            <span>Band context</span>
+            <select id="bandSelect"></select>
+          </label>
+        </form>
+
+        <div class="notice">This sends the same VFO-A CAT frequency command as the slider/tune keys. Scans must be stopped first.</div>
+
+        <div class="button-row">
+          <button id="closeButton" type="button">Close</button>
+          <button id="tuneButton" type="submit" form="manualFrequencyForm" class="primary">Tune VFO-A</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="station.js" type="module"></script>
+    <script src="manual-frequency.js" type="module"></script>
+  </body>
+</html>

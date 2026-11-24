@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FTdx3000 Console</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand-stack">
+          <div class="brand">FTdx3000</div>
+          <div class="subbrand">Yaesu CAT Console</div>
+          <a class="comms-stack-link" href="http://127.0.0.1:3040/">← Comms Stack</a>
+        </div>
+
+        <nav class="tabs" aria-label="Views">
+          <button id="hfBandTab" type="button" class="tab active" data-view="run" data-band="10m">HF Phone</button>
+          <button type="button" class="tab" data-view="run" data-band="6m">6 Meter</button>
+          <button type="button" class="tab" data-view="run" data-band="cb">CB</button>
+          <button id="hunterTab" type="button" class="tab" data-view="hunter">SSB Hunter</button>
+          <button id="audioTestTab" type="button" class="tab" data-view="audioTest">Audio Test</button>
+          <button id="potaTab" type="button" class="tab" data-view="pota">POTA</button>
+          <button id="loggerTab" type="button" class="tab" data-view="logger">Logger</button>
+          <button id="logbookTab" type="button" class="tab" data-view="logbook">Logbook</button>
+          <button id="diagnosticsTab" type="button" class="tab" data-view="diagnostics">Nerd Stuff</button>
+        </nav>
+
+        <div class="power-cluster" aria-label="Power controls">
+          <button id="rigPowerButton" type="button" class="power-button rig-power-button" aria-pressed="false">
+            <span>Rig Power</span>
+            <strong>--</strong>
+          </button>
+          <button id="radioPowerButton" type="button" class="power-button" aria-pressed="true">
+            <span>HF Stack</span>
+            <strong>On</strong>
+          </button>
+        </div>
+      </header>
+
+      <section id="runView" class="view active" aria-label="Run view">
+        <section class="run-panel" aria-label="VFO A readout">
+          <div class="status-row">
+            <span id="connectionLight" class="light" aria-hidden="true"></span>
+            <span id="statusText">Disconnected</span>
+            <span id="updatedText">No radio connected</span>
+          </div>
+
+          <div class="run-grid">
+            <section class="vfo-block" aria-label="VFO A">
+              <div class="phone-band-deck">
+                <label id="phoneBandControl" class="phone-band-control">
+                  <span class="detail-label">Phone band</span>
+                  <select id="phoneBandSelect" aria-describedby="phoneBandRange" disabled>
+                    <option value="10m">10 Meter (Technician)</option>
+                  </select>
+                </label>
+                <div class="vfo-label" id="bandNameDisplay" hidden>10 Meter</div>
+                <span id="phoneBandRange" class="phone-band-range">28.300 - 28.500 MHz</span>
+              </div>
+              <div class="vfo-readout-row">
+	                <div class="frequency-wrap">
+	                  <div class="frequency-hero">
+	                    <output id="frequencyDisplay" class="frequency" aria-live="polite">28.400.000</output>
+	                    <div class="station-call vfo-station-call" aria-label="Station callsign">
+                        <div class="station-grid-square" aria-label="Station grid square" hidden>
+                          <span>Grid</span>
+                          <strong data-station-grid></strong>
+                        </div>
+	                      <span>Station</span>
+	                      <strong data-station-call>LOCAL</strong>
+	                    </div>
+	                  </div>
+                  <section class="operator-journal operator-journal-compact" aria-label="Rolling operator journal">
+                    <textarea id="operatorJournalInput" rows="1" spellcheck="true" aria-label="Operator journal note" placeholder="Quick typed note..."></textarea>
+                    <div class="operator-journal-actions" aria-label="Operator journal actions">
+                      <button id="operatorJournalSubmitButton" type="button">Stamp Note</button>
+                      <button id="operatorJournalFullButton" type="button">View Journal</button>
+                    </div>
+                    <strong id="operatorJournalStatus" class="operator-journal-status">Rolling notes</strong>
+                  </section>
+	                  <section class="vfo-tune-strip" aria-label="VFO quick tuning">
+	                    <div class="vfo-primary-tune-group">
+	                      <div id="cockpitSliderModeButtons" class="slider-mode-buttons cockpit-slider-mode-buttons" role="group" aria-label="Primary slider mode" hidden>
+	                        <button type="button" class="slider-mode-button active" data-slider-mode="presets">Channel Mode</button>
+	                        <button type="button" class="slider-mode-button" data-slider-mode="frequency">Frequency Mode</button>
+	                      </div>
+	                      <label class="vfo-slider-control vfo-frequency-control">
+	                        <span id="cockpitFrequencyLabel">Frequency</span>
+	                        <output id="cockpitFrequencyDisplay">28.400.000</output>
+	                        <input id="cockpitFrequencySlider" type="range" min="28300000" max="28500000" step="10" value="28400000" disabled>
+	                      </label>
+	                    </div>
+	                    <label class="vfo-slider-control vfo-clarifier-control">
+	                      <span>Clarifier</span>
+	                      <output id="cockpitClarifierDisplay">0 Hz</output>
+	                      <input id="cockpitClarifierSlider" type="range" min="-500" max="500" step="1" value="0" disabled>
+	                    </label>
+	                    <button id="cockpitClarifierCenterButton" type="button" class="clarifier-center-button" disabled>Center</button>
+	                    <section class="rf-panel cockpit-rf-panel" aria-label="RF gain">
+	                      <div>
+	                        <span class="detail-label">RF Gain</span>
+	                        <strong id="rfGainDisplay">--</strong>
+	                      </div>
+	                      <input id="rfGainSlider" type="range" min="0" max="255" value="255" disabled>
+	                      <div class="rf-scale">
+	                        <span>MIN</span>
+	                        <span>25%</span>
+	                        <span>50%</span>
+	                        <span>75%</span>
+	                        <span>MAX</span>
+	                      </div>
+	                    </section>
+	                  </section>
+	                  <div class="freq-action-row" aria-label="Logging and manual frequency">
+	                    <button id="potaButton" type="button">POTA</button>
+	                    <button id="logContactButton" type="button">Log Contact</button>
+                    <button id="manualFrequencyButton" type="button">Manual Freq</button>
+                  </div>
+                  <section class="mode-panel" aria-label="Mode controls">
+                    <div class="mode-buttons" aria-label="Mode controls">
+                      <button type="button" class="mode-button" data-mode="AM" disabled>AM</button>
+                      <button type="button" class="mode-button" data-mode="USB" disabled>USB</button>
+                      <button type="button" class="mode-button" data-mode="LSB" disabled>LSB</button>
+                    </div>
+                    <div class="mode-dock-head">
+                      <span class="detail-label">Mode</span>
+                      <strong id="modeDisplay">--</strong>
+                    </div>
+                  </section>
+                  <div id="bandPresetDisplay" class="band-preset">Center 28.400.000 - RF 80%</div>
+                </div>
+              </div>
+
+	              <section class="meter-stack-column" aria-label="Meter stack">
+	                <section class="meter-block" aria-label="RX audio meter stack">
+	                  <section class="audio-probe-panel compact-audio meter-audio-main" aria-label="RX audio monitor">
+	                    <input id="audioMonitorToggle" type="checkbox" checked hidden>
+	                    <div class="audio-level-readout">
+	                      <span id="audioLevelDisplay">RX audio 0%</span>
+	                      <div class="audio-level-track" aria-hidden="true">
+	                        <div id="audioLevelFill" class="audio-level-fill"></div>
+	                      </div>
+	                    </div>
+	                    <label class="range-label audio-volume-label compact-volume">
+	                      Browser listen
+	                      <output id="audioMonitorVolumeDisplay">0%</output>
+	                      <input id="audioMonitorVolumeSlider" type="range" min="0" max="100" step="1" value="0">
+	                    </label>
+	                    <div class="audio-hidden-readouts" hidden>
+	                      <span id="audioSpectrumSpanDisplay">0-4 kHz</span>
+	                      <span id="audioPeakDisplay">-- Hz</span>
+	                      <span id="audioCentroidDisplay">-- Hz</span>
+	                      <span id="audioDbDisplay">-- dBFS</span>
+	                      <span id="audioClipDisplay">0%</span>
+	                      <canvas id="audioSpectrumCanvas" width="640" height="140" aria-label="Audio spectrum" hidden></canvas>
+	                    </div>
+	                  </section>
+
+	                  <div class="aux-meter-grid">
+	                    <section class="aux-meter" aria-label="Power output meter">
+                      <div class="aux-meter-head">
+                        <span>PO</span>
+                        <strong id="powerMeterRawDisplay">0%</strong>
+                      </div>
+                      <div class="aux-track" aria-hidden="true">
+                        <div id="powerMeterFill" class="aux-fill power-fill"></div>
+                        <div id="powerMeterNeedle" class="aux-needle"></div>
+                        <div class="aux-tick-grid"></div>
+                      </div>
+                      <div class="aux-scale">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>100%</span>
+                      </div>
+                      <div id="powerMeterPercentDisplay" class="aux-percent">PO 0%</div>
+                    </section>
+
+                    <section class="aux-meter" aria-label="SWR meter">
+                      <div class="aux-meter-head">
+                        <span>SWR</span>
+                        <strong id="swrMeterRawDisplay">0%</strong>
+                      </div>
+                      <div class="aux-track" aria-hidden="true">
+                        <div id="swrMeterFill" class="aux-fill swr-fill"></div>
+                        <div id="swrMeterNeedle" class="aux-needle"></div>
+                        <div class="aux-tick-grid"></div>
+                      </div>
+                      <div class="aux-scale swr-scale">
+                        <span>1</span>
+                        <span>1.5</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>HI</span>
+                      </div>
+                      <div id="swrMeterPercentDisplay" class="aux-percent">SWR 0%</div>
+                    </section>
+                  </div>
+
+	                </section>
+	              </section>
+
+              <section id="bandPotaPanel" class="band-pota-panel band-pota-panel-top" aria-label="Active POTA spots" hidden>
+                <div class="band-pota-head">
+                  <div>
+                    <span class="detail-label">Active POTA</span>
+                    <strong id="bandPotaStatus">Loading activations...</strong>
+                  </div>
+                  <button id="bandPotaRefreshButton" type="button">Refresh</button>
+                </div>
+                <div id="bandPotaList" class="band-pota-list">
+                  <div class="band-pota-empty">Loading current POTA activations...</div>
+                </div>
+              </section>
+
+              <section id="channelPanel" class="channel-panel" aria-label="Channel presets" hidden>
+                <div class="channel-head">
+                  <div>
+                    <span class="detail-label">Channel presets</span>
+                    <strong id="channelPresetDisplay">--</strong>
+                  </div>
+                  <span id="channelModeDisplay" class="channel-mode">AM</span>
+                </div>
+                <label class="channel-slider-wrap">
+                  <span id="channelSliderLabel">Channel</span>
+                  <output id="channelSliderDisplay">CH 06</output>
+                  <input id="channelSlider" type="range" min="1" max="40" step="1" value="6" disabled>
+                </label>
+                <div id="channelGrid" class="channel-grid"></div>
+              </section>
+
+              <section class="scan-panel" aria-label="10 meter technician allocation scanner">
+                <div class="scan-head">
+                  <div>
+                    <span class="detail-label">Scan range</span>
+                    <strong id="scanRangeDisplay">10m Technician 28.300-28.500</strong>
+                  </div>
+                  <div id="scanStatus" class="scan-status">Idle</div>
+                </div>
+
+                <div class="scan-controls operator-scan-controls">
+                  <label class="toggle-label scan-smart-toggle">
+                    <input id="smartListToggle" type="checkbox" checked>
+                    Smart top 5
+                  </label>
+                  <label class="scan-compact-control">
+                    Scan
+                    <select id="regularScanSourceSelect">
+                      <option value="frequency">Freq</option>
+                      <option value="presets">Presets</option>
+                      <option value="top5">Top 5</option>
+                    </select>
+                  </label>
+                  <label class="scan-compact-control">
+                    Step
+                    <select id="regularScanStepSelect"></select>
+                  </label>
+                  <button id="startScanButton" type="button">Smart scan</button>
+                  <button id="busyScanButton" type="button" class="primary">Scan</button>
+                  <button id="ssbHunterButton" type="button">SSB Hunter</button>
+                  <button id="stopScanButton" type="button" disabled>Stop</button>
+                </div>
+                <a id="ssbHunterFallbackLink" class="hunter-fallback-link" href="/ssb-hunter.html" target="ssb-hunter" hidden>Open SSB Hunter dashboard</a>
+
+                <div class="hit-list-wrap">
+                  <div class="hit-list-head">
+                    <div class="detail-label">Smart top 5</div>
+                    <button id="clearSkipsButton" type="button" class="mini-button" hidden>Clear skipped</button>
+                  </div>
+                  <div id="scanHits" class="hit-list">
+                    <div class="empty-hit">No signals logged yet.</div>
+                  </div>
+                </div>
+              </section>
+
+		            </section>
+
+          </div>
+
+          <div class="detail-row">
+            <div>
+              <span class="detail-label">Radio ID</span>
+              <strong id="modelDisplay">--</strong>
+            </div>
+            <div>
+              <span class="detail-label">Last CAT</span>
+              <strong id="lastCommandDisplay">--</strong>
+            </div>
+            <label class="toggle-label">
+              <input id="tuneKeysToggle" type="checkbox" checked>
+              Tune keys
+            </label>
+            <label class="toggle-label ptt-arm-label">
+              <input id="pttArmToggle" type="checkbox" checked>
+              PTT armed
+            </label>
+            <div class="ptt-status" aria-live="polite">
+              <span class="detail-label">PTT</span>
+              <strong id="pttStatusDisplay">Ready</strong>
+            </div>
+          </div>
+
+          <div class="run-actions">
+            <button id="applyPresetButton" type="button" disabled>Apply 10m preset</button>
+            <button id="atuTuneButton" type="button" disabled>ATU Tune</button>
+            <button id="runConnectButton" type="button" class="primary">Connect CAT</button>
+            <button id="runDisconnectButton" type="button" disabled>Disconnect</button>
+          </div>
+
+          <section class="band-logbook-panel" aria-label="Band logbook">
+            <div class="band-logbook-head">
+              <div>
+                <span class="detail-label">Band Logbook</span>
+                <strong id="bandLogbookStatus">Loading contacts...</strong>
+              </div>
+              <div class="band-logbook-actions">
+                <button id="bandLogbookRefreshButton" type="button">Refresh</button>
+              </div>
+            </div>
+            <div class="band-logbook-table-wrap">
+              <table class="qrz-table band-logbook-table">
+                <thead>
+                  <tr id="bandLogbookHeadRow">
+                    <th>Call</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Mode</th>
+                    <th>Freq</th>
+                    <th>Grid/QTH</th>
+                  </tr>
+                </thead>
+                <tbody id="bandLogbookBody">
+                  <tr><td colspan="6">Loading QRZ contacts...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+        </section>
+      </section>
+
+      <section id="hunterView" class="view" aria-label="SSB Hunter view" hidden>
+        <section class="hunter-tab-panel">
+          <div class="hunter-tab-toolbar">
+            <div>
+              <span class="detail-label">SSB Hunter</span>
+              <strong>Adaptive voice peak cockpit</strong>
+            </div>
+            <label class="hunter-band-control">
+              Band
+              <select id="mainHunterBandSelect">
+                <option value="10m">10 Meter</option>
+                <option value="6m">6 Meter</option>
+                <option value="cb">CB</option>
+              </select>
+            </label>
+            <div class="hunter-tab-actions">
+              <button id="hunterConnectButton" type="button" class="primary">Connect CAT</button>
+              <button id="hunterDisconnectButton" type="button" disabled>Disconnect</button>
+            </div>
+          </div>
+          <iframe id="hunterFrame" class="hunter-frame" title="SSB Hunter cockpit" src="/ssb-hunter.html?embedded=1"></iframe>
+        </section>
+      </section>
+
+      <section id="loggerView" class="view" aria-label="QRZ Logger view" hidden>
+        <section class="logger-tab-panel">
+          <div class="logger-tab-toolbar">
+            <div>
+              <span class="detail-label">QRZ Logger</span>
+              <strong>Contact entry cockpit</strong>
+            </div>
+            <div class="logger-tab-actions">
+              <button id="newLoggerContactButton" type="button" class="primary">New QSO</button>
+            </div>
+          </div>
+          <iframe id="loggerFrame" class="logger-frame" title="QRZ Contact Logger" src="/contact-log.html?embedded=1"></iframe>
+        </section>
+      </section>
+
+      <section id="potaView" class="view" aria-label="POTA Spots view" hidden>
+        <section class="pota-tab-panel">
+          <div class="pota-tab-toolbar">
+            <div>
+              <span class="detail-label">POTA</span>
+              <strong>Current activations</strong>
+            </div>
+            <div>
+              <span class="detail-label">Band filter</span>
+              <strong id="potaBandStatus">Current band</strong>
+            </div>
+          </div>
+          <iframe id="potaFrame" class="pota-frame" title="POTA Spots" src="about:blank" data-src="/pota-spots.html?embedded=1"></iframe>
+        </section>
+      </section>
+
+      <section id="audioTestView" class="view" aria-label="Audio Test view" hidden>
+        <section class="audio-test-panel">
+          <div class="audio-test-head">
+            <div>
+              <span class="detail-label">Audio Test</span>
+              <strong id="audioTestStatusText">Return analyzer standing by</strong>
+            </div>
+            <div class="audio-test-actions">
+              <button id="autoMicPeakButton" type="button">Auto MIC Peak</button>
+              <button id="applyMicPeakButton" type="button" disabled>Apply MIC</button>
+              <button id="audioTestStartButton" type="button" class="primary">Start Audio</button>
+              <button id="audioTestStopButton" type="button" disabled>Stop</button>
+            </div>
+          </div>
+
+          <section class="audio-test-control-row" aria-label="Audio test controls">
+            <div>
+              <span class="detail-label">Input</span>
+              <strong id="audioTestInputText">--</strong>
+            </div>
+            <div>
+              <span class="detail-label">Use</span>
+              <strong>RX analyzer / scan audio</strong>
+            </div>
+            <label class="range-label audio-volume-label audio-test-volume">
+              Browser listen
+              <output id="audioTestVolumeDisplay">0%</output>
+              <input id="audioTestVolumeSlider" type="range" min="0" max="100" step="1" value="0">
+            </label>
+          </section>
+
+          <section class="tx-audio-lab" aria-label="Yaesu transmit audio controls">
+            <div class="tx-audio-lab-head">
+              <div>
+                <span class="detail-label">Yaesu TX audio</span>
+                <strong id="txAudioStatusText">Connect CAT to read radio audio controls.</strong>
+              </div>
+              <label class="toggle-label tx-audio-toggle">
+                <input id="radioMonitorToggle" type="checkbox" disabled>
+                Radio MONI
+              </label>
+            </div>
+            <div class="tx-audio-grid">
+              <label class="range-label tx-audio-range">
+                Radio MONI level
+                <output id="radioMonitorLevelDisplay">--</output>
+                <input id="radioMonitorLevelSlider" type="range" min="1" max="100" step="1" value="50" disabled>
+              </label>
+              <label class="range-label tx-audio-range">
+                MIC gain
+                <output id="micGainDisplay">--</output>
+                <input id="micGainSlider" type="range" min="0" max="100" step="1" value="50" disabled>
+              </label>
+              <label class="range-label tx-audio-range">
+                PROC level
+                <output id="processorLevelDisplay">--</output>
+                <input id="processorLevelSlider" type="range" min="0" max="100" step="1" value="50" disabled>
+              </label>
+              <label class="toggle-label tx-audio-toggle">
+                <input id="processorToggle" type="checkbox" disabled>
+                Speech processor
+              </label>
+              <label class="toggle-label tx-audio-toggle">
+                <input id="parametricEqToggle" type="checkbox" disabled>
+                Parametric EQ
+              </label>
+            </div>
+            <p id="autoMicPeakStatus" class="tx-audio-note">Auto MIC Peak watches the Audio Test return while you speak and suggests a mic-gain move with clipping headroom. It does not key the radio.</p>
+          </section>
+
+          <section class="audio-test-dashboard" aria-label="Realtime audio analysis">
+            <div class="audio-test-meter-card primary-meter">
+              <span>Return level</span>
+              <strong id="audioTestReturnDisplay">0%</strong>
+              <div class="audio-test-meter-track" aria-hidden="true">
+                <div id="audioTestReturnFill" class="audio-test-meter-fill"></div>
+              </div>
+            </div>
+            <div class="audio-test-meter-card">
+              <span>dBFS</span>
+              <strong id="audioTestDbfsDisplay">-- dBFS</strong>
+            </div>
+            <div class="audio-test-meter-card">
+              <span>Clipping</span>
+              <strong id="audioTestClipDisplay">0%</strong>
+            </div>
+            <div class="audio-test-meter-card">
+              <span>Voice score</span>
+              <strong id="audioTestVoiceDisplay">0</strong>
+            </div>
+            <div class="audio-test-meter-card">
+              <span>Modulation</span>
+              <strong id="audioTestModulationDisplay">0</strong>
+            </div>
+            <div class="audio-test-meter-card">
+              <span>Peak / Centroid</span>
+              <strong id="audioTestPeakDisplay">-- / --</strong>
+            </div>
+          </section>
+
+          <section class="audio-test-visuals" aria-label="Audio waveform and spectrum">
+            <div class="audio-test-visual-card">
+              <div class="audio-test-card-head">
+                <span class="detail-label">Waveform</span>
+                <strong id="audioTestWaveformSummary">Waiting for audio</strong>
+              </div>
+              <canvas id="audioTestWaveCanvas" class="audio-test-canvas" width="720" height="180"></canvas>
+            </div>
+            <div class="audio-test-visual-card">
+              <div class="audio-test-card-head">
+                <span class="detail-label">Spectrum</span>
+                <strong id="audioTestSpectrumSummary">0-4 kHz</strong>
+              </div>
+              <canvas id="audioTestSpectrumCanvas" class="audio-test-canvas" width="720" height="180"></canvas>
+            </div>
+          </section>
+
+          <section class="audio-test-diagnosis" aria-label="Audio diagnosis">
+            <div>
+              <span class="detail-label">Balance</span>
+              <strong id="audioTestBalanceDisplay">Low -- / Voice -- / High --</strong>
+            </div>
+            <div>
+              <span class="detail-label">Live read</span>
+              <p id="audioTestDiagnosisText">Start audio to analyze the selected receiver/audio input. Use the radio PHONES jack and MONI function to judge transmitted mic audio.</p>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <section id="logbookView" class="view" aria-label="QRZ Logbook view" hidden>
+        <section class="logbook-panel">
+          <div class="logbook-head">
+            <div>
+              <span class="detail-label">QRZ Logbook</span>
+              <strong id="qrzLogbookStatus">Not loaded</strong>
+            </div>
+            <div class="logbook-actions">
+              <label>
+                Range
+                <select id="qrzRangeSelect">
+                  <option value="today">Today</option>
+                  <option value="7d">Last 7 days</option>
+                  <option value="30d">Last 30 days</option>
+                  <option value="all" selected>All time</option>
+                </select>
+              </label>
+              <label>
+                Cards
+                <select id="qsoCardFilterSelect">
+                  <option value="all" selected>All cards</option>
+                  <option value="queued">Queued unsent</option>
+                  <option value="sent">Sent cards</option>
+                </select>
+              </label>
+              <button id="qrzStatusButton" type="button">Status</button>
+              <button id="qrzRefreshButton" type="button" class="primary">Refresh</button>
+            </div>
+          </div>
+
+          <section class="qrz-map-panel" aria-label="QRZ contact map">
+            <div class="map-surface" id="qrzMap">
+              <canvas id="qrzMapCanvas" class="world-map-canvas" aria-label="World map overlay"></canvas>
+              <div id="qrzMapPins" class="map-pins"></div>
+            </div>
+            <div id="qrzMapSummary" class="map-summary">No contacts loaded.</div>
+          </section>
+
+          <section class="qrz-table-panel" aria-label="QRZ logbook table">
+            <table class="qrz-table">
+              <thead>
+                <tr>
+                  <th>Call</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Band</th>
+                  <th>Mode</th>
+                  <th>Freq</th>
+                  <th>Grid/QTH</th>
+                  <th>Tools</th>
+                </tr>
+              </thead>
+              <tbody id="qrzLogbookBody">
+                <tr><td colspan="8">No QRZ records loaded.</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="qrz-table-panel cb-local-log-panel" aria-label="Local CB logbook table">
+            <div class="cb-local-log-head">
+              <div>
+                <span class="detail-label">Local CB Log</span>
+                <strong id="cbLocalLogStatus">No local CB contacts loaded.</strong>
+              </div>
+              <span class="local-only-badge">never syncs to QRZ</span>
+            </div>
+            <table class="qrz-table cb-local-log-table">
+              <thead>
+                <tr>
+                  <th>Number</th>
+                  <th>Handle</th>
+                  <th>Location</th>
+                  <th>Freq</th>
+                  <th>Mode</th>
+                  <th>Date EST</th>
+                  <th>Time EST</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody id="cbLocalLogBody">
+                <tr><td colspan="8">No local CB contacts yet.</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </section>
+      </section>
+
+      <section id="diagnosticsView" class="view" aria-label="Nerd Stuff view" hidden>
+        <section class="diagnostics-panel nerd-panel" aria-label="Nerd Stuff dashboard">
+          <header class="nerd-hero">
+            <div>
+              <span class="detail-label">Station lab bench</span>
+              <h2>Nerd Stuff</h2>
+              <p>One-second freeze frames of the radio, scanner, audio path, browser storage, and safety rails. The controls here are for connection and diagnostics only.</p>
+            </div>
+            <div class="nerd-actions">
+              <button id="diagnosticsRefreshButton" type="button">Freeze frame</button>
+              <label class="toggle-label nerd-freeze">
+                <input id="diagnosticsFreezeToggle" type="checkbox">
+                Hold
+              </label>
+              <button id="copyDiagnosticsButton" type="button">Copy snapshot</button>
+            </div>
+          </header>
+
+          <section class="nerd-status-strip" aria-label="Diagnostics summary">
+            <div>
+              <span class="detail-label">CAT</span>
+              <strong id="diagnosticsConnectionSummary">Disconnected</strong>
+            </div>
+            <div>
+              <span class="detail-label">VFO-A</span>
+              <strong id="diagnosticsFrequencySummary">--</strong>
+            </div>
+            <div>
+              <span class="detail-label">Scan brain</span>
+              <strong id="diagnosticsScanSummary">Idle</strong>
+            </div>
+            <div>
+              <span class="detail-label">RX audio</span>
+              <strong id="diagnosticsAudioSummary">Idle</strong>
+            </div>
+            <div>
+              <span class="detail-label">Snapshot</span>
+              <strong id="diagnosticsSnapshotTime">--</strong>
+            </div>
+          </section>
+
+          <section class="nerd-grid">
+            <article class="nerd-card nerd-card-wide" aria-label="CAT link lab">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">CAT link lab</span>
+                  <strong>Serial handshake</strong>
+                </div>
+                <span class="nerd-pill">tunes browser target</span>
+              </div>
+              <div class="control-grid nerd-control-grid">
+                <label>
+                  Serial port
+                  <select id="portSelect"></select>
+                </label>
+
+                <label>
+                  CAT rate
+                  <select id="baudSelect">
+                    <option value="4800">4800</option>
+                    <option value="9600">9600</option>
+                    <option value="19200">19200</option>
+                    <option value="38400" selected>38400</option>
+                  </select>
+                </label>
+
+                <label>
+                  Frequency poll
+                  <select id="pollSelect">
+                    <option value="100">0.1 sec</option>
+                    <option value="250" selected>0.25 sec</option>
+                    <option value="500">0.5 sec</option>
+                    <option value="1000">1 sec</option>
+                    <option value="2000">2 sec</option>
+                    <option value="5000">5 sec</option>
+                  </select>
+                </label>
+
+                <label>
+                  RTS line
+                  <select id="rtsSelect">
+                    <option value="high" selected>High</option>
+                    <option value="low">Low</option>
+                  </select>
+                </label>
+
+                <label>
+                  Stop bits
+                  <select id="stopBitsSelect">
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="button-row nerd-button-row">
+                <button id="refreshButton" type="button">Refresh ports</button>
+                <button id="connectButton" type="button" class="primary">Connect CAT</button>
+                <button id="disconnectButton" type="button" disabled>Disconnect</button>
+              </div>
+              <div id="diagnosticsLinkGrid" class="nerd-kv-grid"></div>
+            </article>
+
+            <article class="nerd-card" aria-label="Radio freeze frame">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">Radio freeze frame</span>
+                  <strong>FTdx3000 readback</strong>
+                </div>
+              </div>
+              <div id="diagnosticsRadioGrid" class="nerd-kv-grid"></div>
+            </article>
+
+            <article class="nerd-card" aria-label="Scanner lab">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">Scanner lab</span>
+                  <strong>Brain timing</strong>
+                </div>
+                <div id="scanRateDisplay" class="scan-rate">10.0 ch/s target</div>
+              </div>
+              <div class="scan-controls diagnostics-scan-controls nerd-scan-controls">
+                <label id="scanThresholdControl" hidden>
+                  Legacy threshold
+                  <select id="scanThresholdSelect"></select>
+                </label>
+                <label>
+                  Step
+                  <select id="scanStepSelect"></select>
+                </label>
+                <label class="range-label">
+                  Smart dwell
+                  <output id="scanDwellDisplay">100 ms</output>
+                  <input id="scanDwellSlider" type="range" min="20" max="1000" step="10" value="100">
+                </label>
+                <label class="range-label">
+                  Regular dwell
+                  <output id="regularScanDwellDisplay">100 ms</output>
+                  <input id="regularScanDwellSlider" type="range" min="20" max="1000" step="10" value="100">
+                </label>
+                <label id="readableScanControl" class="scan-check" hidden>
+                  <input id="readableScanToggle" type="checkbox" checked>
+                  Legacy readable
+                </label>
+                <label id="busyAssistControl" class="scan-check" hidden>
+                  <input id="busyAssistToggle" type="checkbox">
+                  Legacy assist
+                </label>
+                <button id="benchmarkScanButton" type="button" disabled>Speed test</button>
+              </div>
+              <div id="diagnosticsScanGrid" class="nerd-kv-grid"></div>
+              <div id="benchmarkResults" class="benchmark-results" hidden></div>
+            </article>
+
+            <article class="nerd-card" aria-label="Audio intake lab">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">Audio intake</span>
+                  <strong id="audioStatusText">Idle</strong>
+                </div>
+              </div>
+              <div class="audio-controls nerd-audio-controls">
+                <label>
+                  Input
+                  <select id="audioInputSelect"></select>
+                </label>
+                <button id="refreshAudioInputsButton" type="button">Refresh audio</button>
+                <button id="startAudioProbeButton" type="button" class="primary">Start audio</button>
+                <button id="stopAudioProbeButton" type="button" disabled>Stop audio</button>
+                <label class="range-label audio-volume-label nerd-monitor-level">
+                  Browser listen
+                  <output id="diagnosticsMonitorVolumeDisplay">0%</output>
+                  <input id="diagnosticsMonitorVolumeSlider" type="range" min="0" max="100" step="1" value="0">
+                </label>
+                <label class="toggle-label nerd-radio-monitor-toggle">
+                  <input id="diagnosticsRadioMonitorToggle" type="checkbox" disabled>
+                  Radio MONI
+                </label>
+                <label class="range-label audio-volume-label nerd-radio-monitor-level">
+                  Radio MONI level
+                  <output id="diagnosticsRadioMonitorLevelDisplay">--</output>
+                  <input id="diagnosticsRadioMonitorLevelSlider" type="range" min="1" max="100" step="1" value="50" disabled>
+                </label>
+              </div>
+              <div id="diagnosticsAudioGrid" class="nerd-kv-grid"></div>
+            </article>
+
+            <article class="nerd-card" aria-label="Safety rails">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">Safety rails</span>
+                  <strong>Things that keep us honest</strong>
+                </div>
+              </div>
+              <div class="guard nerd-guard">
+                <div>
+                  <span class="detail-label">CAT allowlist</span>
+                  <strong id="allowlistDisplay">FA;, MD0;</strong>
+                </div>
+                <p>Official FTdx3000 CAT commands only. CB logging is local-only and blocked from QRZ sync.</p>
+              </div>
+              <div id="diagnosticsSafetyGrid" class="nerd-kv-grid"></div>
+            </article>
+
+            <article class="nerd-card" aria-label="Browser and storage">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">Browser locker</span>
+                  <strong>Local state</strong>
+                </div>
+              </div>
+              <div id="diagnosticsStorageGrid" class="nerd-kv-grid"></div>
+            </article>
+
+            <article class="nerd-card nerd-card-wide" aria-label="SSB Hunter internals">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">SSB Hunter internals</span>
+                  <strong>Last hunter state</strong>
+                </div>
+              </div>
+              <pre id="diagnosticsHunterDump" class="nerd-pre">No hunter state yet.</pre>
+            </article>
+
+            <article class="nerd-card nerd-card-wide" aria-label="Readable CAT event log">
+              <div class="nerd-card-head">
+                <div>
+                  <span class="detail-label">Readable CAT event log</span>
+                  <strong>Throttled to keep it human</strong>
+                </div>
+              </div>
+              <div id="messageLog" class="message-log nerd-log" aria-live="polite"></div>
+            </article>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="station.js" type="module"></script>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

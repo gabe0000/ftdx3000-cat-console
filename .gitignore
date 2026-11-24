@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+npm-debug.log*
+.env
+.env.*
+!/.env.example
+/.tmp/
+/output/
+/public/station-settings.local.json
+/docs/quick-start-guide.pdf
+/docs/quick-start-guide.html
+/docs/quick-start-guide.md
+/docs/quick-start/assets/screen-*.png
+/scripts/generate-quick-start-guide.mjs

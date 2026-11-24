@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POTA Spots</title>
+    <link rel="stylesheet" href="qrz-popout.css">
+  </head>
+  <body class="pota-window">
+    <main class="popout-shell pota-shell">
+      <header class="popout-topbar">
+        <div>
+          <div class="brand">Current POTA</div>
+          <div id="bandSummary" class="subbrand">Current band activations</div>
+        </div>
+        <div class="station-call popout-call" aria-label="Station callsign">
+          <span>Station</span>
+          <strong data-station-call>LOCAL</strong>
+          <div class="station-grid-square" aria-label="Station grid square" hidden>
+            <span>Grid</span>
+            <strong data-station-grid></strong>
+          </div>
+        </div>
+        <div id="statusText" class="status">Loading</div>
+      </header>
+
+      <section class="popout-panel">
+        <div class="pota-toolbar">
+          <label class="pota-mode-filter">
+            Mode
+            <select id="modeFilterSelect">
+              <option value="ALL">All</option>
+              <option value="SSB" selected>SSB</option>
+              <option value="USB">USB</option>
+              <option value="LSB">LSB</option>
+              <option value="AM">AM</option>
+              <option value="FM">FM</option>
+              <option value="CW">CW</option>
+              <option value="DIGI">Digital</option>
+            </select>
+          </label>
+          <label class="inline-check">
+            <input id="includeQrtToggle" type="checkbox">
+            Show QRT spots
+          </label>
+          <button id="refreshButton" type="button">Refresh</button>
+          <button id="closeButton" type="button">Close</button>
+        </div>
+
+        <div id="noticeText" class="notice">Current activator spots for this band. Tune moves VFO-A; Log opens the Logger.</div>
+
+        <div id="spotList" class="pota-list">
+          <div class="empty">Loading current POTA activations...</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="station.js" type="module"></script>
+    <script src="pota-spots.js" type="module"></script>
+  </body>
+</html>

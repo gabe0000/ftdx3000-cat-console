@@ -1,0 +1,706 @@
+:root {
+  color-scheme: dark;
+  --bg: #030713;
+  --panel: #101a2b;
+  --panel-hot: #172849;
+  --line: #8fb8ff;
+  --text: #f8fbff;
+  --muted: #b8c8e7;
+  --red: #ff304a;
+  --blue: #2f78ff;
+  --white: #f8fbff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(130deg, rgba(47, 120, 255, 0.24), transparent 34%),
+    linear-gradient(225deg, transparent 0 58%, rgba(255, 48, 74, 0.18) 58% 66%, rgba(248, 251, 255, 0.08) 66%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.026) 0 1px, transparent 1px 5px),
+    var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  min-height: 48px;
+  border: 1px solid rgba(248, 251, 255, 0.58);
+  border-radius: 6px;
+  color: var(--text);
+  background: linear-gradient(180deg, #222a31, #0b0e11);
+  font: inherit;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+button.primary {
+  border-color: var(--white);
+  background: linear-gradient(180deg, #e73752, #9d1630 58%, #081126);
+  box-shadow: 0 0 22px rgba(255, 48, 74, 0.28);
+}
+
+button.danger {
+  border-color: rgba(255, 48, 74, 0.9);
+  background: linear-gradient(180deg, #242a34, #111720 48%, #610e1f);
+  box-shadow: 0 0 18px rgba(255, 48, 74, 0.2);
+}
+
+button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+select {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid rgba(143, 184, 255, 0.62);
+  border-radius: 6px;
+  color: var(--text);
+  background: #060b15;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: 8px 0 0;
+  accent-color: var(--red);
+}
+
+.hunter-shell {
+  width: min(1180px, calc(100vw - 28px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 0;
+  display: grid;
+  gap: 14px;
+}
+
+.hunter-topbar,
+.frequency-stage,
+.control-stack,
+.viz-panel,
+.envelope-focus-panel,
+.history-panel,
+.nerd-panel {
+  border: 1px solid rgba(248, 251, 255, 0.7);
+  border-radius: 8px;
+  background:
+    linear-gradient(100deg, rgba(47, 120, 255, 0.16), transparent 70%, rgba(255, 48, 74, 0.12)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.034) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, var(--panel-hot), #070b15);
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.42);
+}
+
+.hunter-topbar {
+  min-height: 74px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hunter-brand {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.hunter-subbrand,
+.stage-meta,
+.phase-row span,
+.panel-head span,
+.audio-status span,
+.audio-picker span,
+.control-slider span,
+.ptt-status span,
+.mini-meter span,
+dt {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hunter-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hunter-top-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.hunter-band-picker {
+  min-width: 190px;
+  display: grid;
+  gap: 5px;
+}
+
+.hunter-band-picker span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.connection-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 16px rgba(255, 48, 74, 0.5);
+}
+
+.connection-dot.connected {
+  background: var(--blue);
+  box-shadow: 0 0 20px rgba(47, 120, 255, 0.64);
+}
+
+.cockpit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 14px;
+}
+
+.frequency-stage {
+  min-width: 0;
+  padding: 22px;
+}
+
+.stage-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hunter-frequency {
+  display: block;
+  margin: 16px 0 18px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: clamp(3.4rem, 9vw, 7.4rem);
+  font-weight: 900;
+  line-height: 0.95;
+  white-space: nowrap;
+  text-shadow:
+    0 0 18px rgba(248, 251, 255, 0.35),
+    0 0 42px rgba(47, 120, 255, 0.28),
+    0 0 70px rgba(255, 48, 74, 0.18);
+}
+
+.hunter-frequency-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.hunter-frequency-actions button {
+  min-height: 42px;
+  border-color: rgba(143, 184, 255, 0.86);
+  background: linear-gradient(180deg, rgba(47, 120, 255, 0.55), rgba(6, 23, 71, 0.95));
+}
+
+.cockpit-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.phase-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.phase-row div,
+.audio-status,
+.audio-picker,
+.control-slider,
+.ptt-status,
+.mini-meter,
+.tone-gate,
+.nerd-panel dl div {
+  padding: 10px;
+  border: 1px solid rgba(143, 184, 255, 0.42);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.phase-row strong,
+.panel-head strong,
+.audio-status strong,
+.control-slider strong,
+.ptt-status strong,
+.mini-meter strong,
+dd {
+  display: block;
+  margin-top: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color: var(--white);
+}
+
+.control-stack {
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.ptt-status {
+  border-color: rgba(143, 184, 255, 0.6);
+}
+
+.ptt-status.transmitting {
+  border-color: rgba(255, 48, 74, 0.95);
+  color: var(--red);
+  box-shadow: inset 0 0 22px rgba(255, 48, 74, 0.18);
+}
+
+.ptt-status.transmitting strong {
+  color: var(--red);
+}
+
+.audio-picker,
+.control-slider {
+  display: grid;
+  gap: 8px;
+}
+
+.inline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.inline-toggle input {
+  width: auto;
+  accent-color: var(--red);
+}
+
+.speed-meter {
+  border-color: rgba(255, 48, 74, 0.62);
+}
+
+.speed-control-slider {
+  grid-template-columns: 1fr;
+  gap: 7px;
+  border-color: rgba(255, 48, 74, 0.56);
+  background:
+    linear-gradient(105deg, rgba(47, 120, 255, 0.12), rgba(255, 48, 74, 0.09)),
+    rgba(0, 0, 0, 0.18);
+}
+
+.speed-control-slider span {
+  min-width: 0;
+}
+
+.speed-control-slider strong {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  justify-self: stretch;
+  margin-top: 0;
+  padding: 5px 8px 6px;
+  border: 1px solid rgba(248, 251, 255, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(47, 120, 255, 0.28), rgba(248, 251, 255, 0.08), rgba(255, 48, 74, 0.26)),
+    rgba(2, 5, 12, 0.48);
+  color: var(--white);
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 0 12px rgba(248, 251, 255, 0.38);
+}
+
+.speed-control-slider .speed-name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--white);
+  font-size: 0.94rem;
+  text-transform: none;
+  text-overflow: ellipsis;
+}
+
+.speed-control-slider .speed-value {
+  flex: 0 0 auto;
+  color: rgba(202, 216, 244, 0.86);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.68rem;
+  text-transform: none;
+}
+
+.speed-control-slider input[type="range"] {
+  grid-column: 1 / -1;
+  accent-color: var(--red);
+}
+
+.speed-control-slider .slider-hint {
+  grid-column: 1 / -1;
+  min-height: 0;
+  color: rgba(202, 216, 244, 0.78);
+  font-size: 0.66rem;
+  line-height: 1.15;
+  text-transform: none;
+}
+
+#hunterSpeedFill {
+  background: linear-gradient(90deg, var(--blue), var(--white), var(--red));
+}
+
+.control-slider strong {
+  justify-self: end;
+  margin-top: -22px;
+}
+
+.slider-hint {
+  min-height: 1.9em;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.mini-track {
+  height: 14px;
+  margin-top: 8px;
+  border: 1px solid rgba(248, 251, 255, 0.62);
+  border-radius: 999px;
+  background: #05070a;
+  overflow: hidden;
+}
+
+.mini-track div {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #2f78ff, #f8fbff, #ff304a);
+}
+
+.mini-track.modulation div {
+  background: linear-gradient(90deg, #2f78ff, #8fb8ff, #f8fbff);
+}
+
+.tone-gate {
+  color: #8fb8ff;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tone-gate.rejected {
+  color: var(--red);
+  border-color: rgba(255, 48, 74, 0.8);
+}
+
+.visual-grid,
+.lower-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.cockpit-visual-grid {
+  margin-top: 14px;
+  gap: 10px;
+}
+
+.viz-panel,
+.envelope-focus-panel,
+.history-panel,
+.nerd-panel {
+  min-width: 0;
+  padding: 14px;
+}
+
+.panel-head {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+canvas {
+  width: 100%;
+  height: 170px;
+  margin-top: 8px;
+  display: block;
+  border: 1px solid rgba(248, 251, 255, 0.5);
+  border-radius: 6px;
+  background: #02050c;
+}
+
+.cockpit-visual-grid .viz-panel {
+  padding: 10px;
+  background:
+    linear-gradient(100deg, rgba(47, 120, 255, 0.12), transparent 70%, rgba(255, 48, 74, 0.1)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 5px),
+    rgba(2, 5, 12, 0.42);
+  box-shadow: inset 0 1px 0 rgba(248, 251, 255, 0.12);
+}
+
+.cockpit-visual-grid canvas {
+  height: 136px;
+}
+
+.envelope-focus-panel {
+  margin-top: 14px;
+}
+
+.envelope-focus-panel canvas {
+  height: 320px;
+}
+
+.envelope-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.envelope-metrics div {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(143, 184, 255, 0.38);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(47, 120, 255, 0.12), transparent 70%, rgba(255, 48, 74, 0.08)),
+    rgba(0, 0, 0, 0.2);
+}
+
+.envelope-metrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.envelope-metrics strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--white);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.92rem;
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.candidate-list {
+  display: grid;
+  gap: 8px;
+}
+
+.candidate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px 70px;
+  gap: 8px;
+  align-items: center;
+  padding: 9px;
+  border: 1px solid rgba(143, 184, 255, 0.44);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.candidate-row button {
+  min-height: 34px;
+  padding: 0 8px;
+  font-size: 0.8rem;
+}
+
+.candidate-row strong {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.candidate-row span,
+.empty {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.nerd-panel dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+dt,
+dd {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .cockpit-grid,
+  .cockpit-controls,
+  .visual-grid,
+  .lower-grid,
+  .envelope-metrics,
+  .phase-row,
+  .nerd-panel dl {
+    grid-template-columns: 1fr;
+  }
+
+  .hunter-topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+.hunter-call-sign {
+  position: relative;
+  min-width: 154px;
+  padding: 6px 14px 10px;
+  border: 1px solid rgba(248, 251, 255, 0.78);
+  border-radius: 4px;
+  background:
+    linear-gradient(90deg, rgba(47, 120, 255, 0.48), transparent 18% 82%, rgba(255, 48, 74, 0.52)),
+    linear-gradient(180deg, rgba(255, 48, 74, 0.94), rgba(113, 10, 28, 0.94) 56%, rgba(6, 23, 71, 0.96)),
+    #071020;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -10px 22px rgba(2, 5, 12, 0.42),
+    0 0 24px rgba(255, 48, 74, 0.26),
+    0 0 38px rgba(47, 120, 255, 0.18);
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  isolation: isolate;
+  overflow: hidden;
+  text-align: center;
+}
+
+.hunter-call-sign::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 5px),
+    linear-gradient(90deg, rgba(248, 251, 255, 0.18), transparent 42% 58%, rgba(47, 120, 255, 0.2));
+  opacity: 0.65;
+}
+
+.hunter-call-sign::after {
+  content: "";
+  position: absolute;
+  inset: auto 12px 5px;
+  z-index: 1;
+  height: 2px;
+  background: linear-gradient(90deg, #2f78ff, #f8fbff, #ff304a);
+  box-shadow: 0 0 12px rgba(248, 251, 255, 0.48);
+}
+
+.hunter-call-sign span {
+  position: relative;
+  z-index: 2;
+  display: block;
+  color: #d8e5ff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hunter-call-sign strong {
+  position: relative;
+  z-index: 2;
+  display: block;
+  color: var(--white);
+  font-size: clamp(1.35rem, 2.2vw, 2.05rem);
+  font-weight: 950;
+  line-height: 0.9;
+  text-shadow:
+    0 0 10px rgba(248, 251, 255, 0.48),
+    0 0 22px rgba(47, 120, 255, 0.34);
+}
+
+.station-grid-square {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  z-index: 2;
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  gap: 5px;
+  align-items: baseline;
+  justify-content: center;
+  width: fit-content;
+  margin: 4px auto 0;
+  padding: 1px 6px 2px;
+  border: 1px solid rgba(143, 184, 255, 0.4);
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, rgba(47, 120, 255, 0.18), rgba(255, 48, 74, 0.1)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 4px),
+    rgba(2, 5, 12, 0.38);
+  box-shadow: inset 0 1px 0 rgba(248, 251, 255, 0.14);
+  opacity: 0.82;
+}
+
+.hunter-call-sign .station-grid-square span,
+.hunter-call-sign .station-grid-square strong {
+  position: static;
+  display: inline;
+  line-height: 1;
+  text-shadow: none;
+  white-space: nowrap;
+}
+
+.hunter-call-sign .station-grid-square span {
+  color: rgba(216, 229, 255, 0.72);
+  font-size: 0.44rem;
+  letter-spacing: 0;
+}
+
+.hunter-call-sign .station-grid-square strong {
+  color: rgba(248, 251, 255, 0.92);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.hunter-brand,
+.hunter-subbrand,
+.hunter-call-sign,
+button,
+.hunter-band-picker span,
+.hunter-status strong,
+.stage-meta,
+.hunter-frequency,
+.hunter-frequency-actions button,
+.phase-row span,
+.phase-row strong,
+.panel-head span,
+.panel-head strong,
+.audio-status span,
+.audio-status strong,
+.control-slider span,
+.control-slider strong,
+.ptt-status span,
+.ptt-status strong,
+.mini-meter span,
+.mini-meter strong,
+.tone-gate,
+.candidate-row strong,
+dt,
+dd {
+  font-family: "Arial Narrow", "Avenir Next Condensed", "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+}

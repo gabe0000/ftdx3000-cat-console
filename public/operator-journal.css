@@ -1,0 +1,201 @@
+:root {
+  color-scheme: dark;
+  --background: #030713;
+  --line: #86a7df;
+  --text: #f8fbff;
+  --muted: #b8c8e7;
+  --red: #ff304a;
+  --blue: #2f78ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    linear-gradient(130deg, rgba(47, 120, 255, 0.22), transparent 48%, rgba(255, 48, 74, 0.2)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 5px),
+    var(--background);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.journal-shell {
+  width: min(100vw - 22px, 660px);
+  margin: 0 auto;
+  padding: 12px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.journal-topbar,
+.journal-panel {
+  border: 1px solid rgba(248, 251, 255, 0.68);
+  border-radius: 7px;
+  background:
+    linear-gradient(100deg, rgba(47, 120, 255, 0.18), transparent 36% 68%, rgba(255, 48, 74, 0.16)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.038) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, #16233a, #050914);
+  box-shadow:
+    inset 0 1px 0 rgba(248, 251, 255, 0.16),
+    0 18px 62px rgba(0, 0, 0, 0.34);
+}
+
+.journal-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+}
+
+.brand {
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(143, 184, 255, 0.36);
+}
+
+.subbrand,
+.journal-panel-head span,
+.journal-meta {
+  color: var(--muted);
+}
+
+.subbrand {
+  margin-top: 4px;
+  font-weight: 800;
+}
+
+button {
+  min-height: 36px;
+  border: 1px solid rgba(248, 251, 255, 0.76);
+  border-radius: 5px;
+  padding: 8px 13px;
+  background:
+    linear-gradient(180deg, rgba(255, 48, 74, 0.76), rgba(8, 27, 87, 0.95)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 5px);
+  color: var(--text);
+  font-weight: 950;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.12);
+}
+
+.journal-panel {
+  min-height: calc(100vh - 104px);
+  padding: 14px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.journal-panel-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid rgba(143, 184, 255, 0.32);
+  padding-bottom: 12px;
+}
+
+.journal-panel-head span {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.journal-panel-head strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.journal-list {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-right: 2px;
+}
+
+.journal-entry,
+.journal-empty {
+  border: 1px solid rgba(134, 167, 223, 0.44);
+  border-radius: 6px;
+  padding: 11px 12px;
+  background:
+    linear-gradient(90deg, rgba(47, 120, 255, 0.14), transparent 70%, rgba(255, 48, 74, 0.1)),
+    rgba(0, 0, 0, 0.34);
+}
+
+.journal-entry.current {
+  border-color: rgba(248, 251, 255, 0.7);
+  box-shadow: 0 0 22px rgba(47, 120, 255, 0.12);
+}
+
+.journal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: baseline;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.journal-meta time {
+  color: #8fb8ff;
+}
+
+.journal-entry p {
+  margin: 7px 0 0;
+  color: #ffffff;
+  font-size: 0.98rem;
+  line-height: 1.38;
+  white-space: pre-wrap;
+}
+
+.journal-entry-actions {
+  display: flex;
+  justify-content: end;
+  margin-top: 10px;
+}
+
+.journal-entry-actions button {
+  min-height: 30px;
+  border-color: rgba(255, 48, 74, 0.78);
+  background:
+    linear-gradient(180deg, rgba(35, 42, 52, 0.96), rgba(17, 23, 32, 0.95) 48%, rgba(97, 14, 31, 0.9)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.065) 0 1px, transparent 1px 5px);
+  font-size: 0.76rem;
+}
+
+.journal-empty {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+@media (max-width: 520px) {
+  .journal-topbar,
+  .journal-panel-head {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

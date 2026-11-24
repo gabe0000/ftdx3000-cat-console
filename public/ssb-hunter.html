@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SSB Hunter</title>
+    <link rel="stylesheet" href="hunter.css">
+  </head>
+  <body>
+    <main class="hunter-shell">
+      <header class="hunter-topbar">
+        <div>
+          <div class="hunter-brand">SSB Hunter</div>
+          <div class="hunter-subbrand">Adaptive voice peak cockpit</div>
+        </div>
+        <div class="hunter-top-controls">
+          <div class="hunter-call-sign" aria-label="Station callsign">
+            <span>Station</span>
+            <strong data-station-call>LOCAL</strong>
+            <div class="station-grid-square" aria-label="Station grid square" hidden>
+              <span>Grid</span>
+              <strong data-station-grid></strong>
+            </div>
+          </div>
+          <label class="hunter-band-picker">
+            <span>Band</span>
+            <select id="hunterBandSelect">
+              <option value="10m">10 Meter</option>
+              <option value="6m">6 Meter</option>
+              <option value="cb">CB</option>
+            </select>
+          </label>
+          <div class="hunter-status">
+            <span id="connectionDot" class="connection-dot"></span>
+            <strong id="statusText">Connecting dashboard</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="cockpit-grid">
+        <section class="frequency-stage">
+          <div class="stage-meta">
+            <span id="bandDisplay">--</span>
+            <span id="modeDisplay">--</span>
+            <span id="rangeDisplay">--</span>
+          </div>
+          <output id="frequencyDisplay" class="hunter-frequency">28.400.000</output>
+          <div class="hunter-frequency-actions" aria-label="Logging and manual frequency">
+            <button id="hunterPotaButton" type="button">POTA</button>
+            <button id="hunterLogContactButton" type="button">Log Contact</button>
+            <button id="hunterManualFrequencyButton" type="button">Manual Freq</button>
+          </div>
+          <div class="cockpit-controls">
+            <label class="control-slider">
+              <span>RX lift gate</span>
+              <strong id="audioThresholdDisplay">15%</strong>
+              <input id="audioThresholdSlider" type="range" min="0" max="80" step="1" value="15" aria-describedby="audioThresholdHint">
+              <small id="audioThresholdHint" class="slider-hint">Lift above local noise to investigate.</small>
+            </label>
+            <label class="control-slider">
+              <span>Lock hold</span>
+              <strong id="lockTimeDisplay">5s</strong>
+              <input id="lockTimeSlider" type="range" min="1" max="60" step="1" value="5" aria-describedby="lockTimeHint">
+              <small id="lockTimeHint" class="slider-hint">Park time after a confirmed hit.</small>
+            </label>
+            <label class="control-slider speed-control-slider">
+              <span>Cycle dwell</span>
+              <strong id="baseSpeedDisplay"><span class="speed-name">Light Speed</span><span class="speed-value">35 ms/step</span></strong>
+              <input id="baseSpeedSlider" type="range" min="8" max="120" step="1" value="35" aria-describedby="baseSpeedHint">
+              <small id="baseSpeedHint" class="slider-hint">Step stays fixed; this only changes wait per step.</small>
+            </label>
+            <label class="control-slider">
+              <span>RF gain / target</span>
+              <strong id="hunterRfGainDisplay">--</strong>
+              <input id="hunterRfGainSlider" type="range" min="0" max="255" step="1" value="115" disabled aria-describedby="hunterRfGainHint">
+              <small id="hunterRfGainHint" class="slider-hint">Manual gain; Auto RF sets target lift.</small>
+              <div class="inline-toggle">
+                <input id="autoRfGainToggle" type="checkbox">
+                <span>Auto RF</span>
+              </div>
+            </label>
+          </div>
+          <div class="phase-row">
+            <div>
+              <span>Phase</span>
+              <strong id="phaseDisplay">Idle</strong>
+            </div>
+            <div>
+              <span>Step</span>
+              <strong id="stepDisplay">-- Hz</strong>
+            </div>
+            <div>
+              <span>Best</span>
+              <strong id="bestDisplay">--</strong>
+            </div>
+            <div>
+              <span>Lock Hold</span>
+              <strong id="lockHoldDisplay">--</strong>
+            </div>
+          </div>
+
+          <section class="visual-grid cockpit-visual-grid" aria-label="Hunter trace and sweep">
+            <section class="viz-panel">
+              <div class="panel-head">
+                <span>Score Trace</span>
+                <strong id="scoreDisplay">0</strong>
+              </div>
+              <canvas id="scoreCanvas" width="780" height="170"></canvas>
+            </section>
+
+            <section class="viz-panel">
+              <div class="panel-head">
+                <span>Sweep Lane</span>
+                <strong id="decisionDisplay">Idle</strong>
+              </div>
+              <canvas id="sweepCanvas" width="780" height="170"></canvas>
+            </section>
+          </section>
+        </section>
+
+        <aside class="control-stack">
+          <button id="startHunterButton" type="button" class="primary">Start Hunt</button>
+          <button id="stopHunterButton" type="button">Stop</button>
+          <button id="skipHunterButton" type="button" class="danger">Skip Target</button>
+          <div class="ptt-status">
+            <span>PTT</span>
+            <strong id="pttStatusDisplay">Ready</strong>
+          </div>
+          <div class="audio-status">
+            <span>Audio</span>
+            <strong id="audioStatusDisplay">Idle</strong>
+          </div>
+          <label class="audio-picker">
+            <span>RX input</span>
+            <select id="audioInputSelect">
+              <option value="">Scanning audio...</option>
+            </select>
+          </label>
+          <div class="mini-meter">
+            <span>Level</span>
+            <strong id="audioLevelDisplay">0%</strong>
+            <div class="mini-track"><div id="audioLevelFill"></div></div>
+          </div>
+          <div class="mini-meter">
+            <span>Modulation</span>
+            <strong id="modulationDisplay">0</strong>
+            <div class="mini-track modulation"><div id="modulationFill"></div></div>
+          </div>
+          <div id="toneRejectDisplay" class="tone-gate">Tone gate clear</div>
+          <div class="mini-meter speed-meter">
+            <span>Speed</span>
+            <strong id="hunterSpeedDisplay">Impulse</strong>
+            <div class="mini-track"><div id="hunterSpeedFill"></div></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="envelope-focus-panel">
+        <div class="panel-head">
+          <span>Envelope Focus</span>
+          <strong id="envelopeStatusDisplay">Hunting</strong>
+        </div>
+        <canvas id="envelopeCanvas" width="1580" height="320"></canvas>
+        <div class="envelope-metrics" aria-label="Envelope focus metrics">
+          <div>
+            <span>View</span>
+            <strong id="envelopeViewDisplay">Whole band</strong>
+          </div>
+          <div>
+            <span>Cursor</span>
+            <strong id="envelopeCursorDisplay">--</strong>
+          </div>
+          <div>
+            <span>Edges</span>
+            <strong id="envelopeEdgesDisplay">--</strong>
+          </div>
+          <div>
+            <span>Peak</span>
+            <strong id="envelopePeakDisplay">--</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="lower-grid">
+        <section class="history-panel">
+          <div class="panel-head">
+            <span>Candidate History</span>
+            <strong id="hitCountDisplay">0</strong>
+          </div>
+          <div id="candidateList" class="candidate-list">
+            <div class="empty">No SSB candidates yet.</div>
+          </div>
+        </section>
+
+        <section class="nerd-panel">
+          <div class="panel-head">
+            <span>Nerd Stack</span>
+            <strong id="lastCommandDisplay">--</strong>
+          </div>
+          <dl>
+            <div><dt>Current score</dt><dd id="currentScoreDisplay">0</dd></div>
+            <div><dt>Best score</dt><dd id="bestScoreDisplay">0</dd></div>
+            <div><dt>Lock timer</dt><dd id="lockTimerDisplay">--</dd></div>
+            <div><dt>Resume freq</dt><dd id="resumeFrequencyDisplay">--</dd></div>
+            <div><dt>Dwell</dt><dd id="hunterDwellDisplay">-- ms</dd></div>
+            <div><dt>Samples</dt><dd id="sampleCountDisplay">0</dd></div>
+            <div><dt>Local floor</dt><dd id="noiseFloorDisplay">--</dd></div>
+            <div><dt>Lift</dt><dd id="signalLiftDisplay">--</dd></div>
+            <div><dt>Voice shape</dt><dd id="voiceLikeDisplay">0</dd></div>
+            <div><dt>Spectrum fit</dt><dd id="spectralShapeDisplay">0</dd></div>
+            <div><dt>Wide noise</dt><dd id="broadbandDisplay">Clear</dd></div>
+            <div><dt>Peak</dt><dd id="peakDisplay">-- Hz</dd></div>
+            <div><dt>Centroid</dt><dd id="centroidDisplay">-- Hz</dd></div>
+            <div><dt>dBFS</dt><dd id="dbDisplay">--</dd></div>
+          </dl>
+        </section>
+      </section>
+    </main>
+
+    <script src="station.js" type="module"></script>
+    <script src="ssb-hunter.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Operator Journal</title>
+    <link rel="stylesheet" href="operator-journal.css">
+  </head>
+  <body>
+    <main class="journal-shell">
+      <header class="journal-topbar">
+        <div>
+          <div class="brand">Operator Journal</div>
+          <div class="subbrand" data-journal-station>Stamped station notes</div>
+        </div>
+        <button id="exitButton" type="button">Exit</button>
+      </header>
+
+      <section class="journal-panel" aria-label="Full operator journal">
+        <div class="journal-panel-head">
+          <div>
+            <span>Rolling Record</span>
+            <strong id="journalStatus">Loading notes</strong>
+          </div>
+          <button id="refreshButton" type="button">Refresh</button>
+        </div>
+
+        <div id="journalList" class="journal-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="station.js" type="module"></script>
+    <script src="operator-journal.js" type="module"></script>
+  </body>
+</html>
